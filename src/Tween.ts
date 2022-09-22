@@ -17,7 +17,7 @@ import type {EasingFunction} from './Easing'
 import type {InterpolationFunction} from './Interpolation'
 import type Group from './Group'
 
-export class Tween<T extends UnknownProps, TProps = ExtractProps<T>> {
+export class Tween<T extends UnknownProps, TProps extends UnknownProps = ExtractProps<T>> {
 	private _isPaused = false
 	private _pauseStart = 0
 	private _valuesStart: UnknownProps = {}
@@ -61,7 +61,7 @@ export class Tween<T extends UnknownProps, TProps = ExtractProps<T>> {
 		return this._isPaused
 	}
 
-	to(properties: UnknownProps, duration?: number): this {
+	toNotStrict(properties: UnknownProps, duration?: number): this {
 		// TODO? restore this, then update the 07_dynamic_to example to set fox
 		// tween's to on each update. That way the behavior is opt-in (there's
 		// currently no opt-out).
@@ -75,8 +75,8 @@ export class Tween<T extends UnknownProps, TProps = ExtractProps<T>> {
 		return this
 	}
 
-	toStrict(properties: TProps, duration?: number): this {
-		return this.to(properties, duration);
+	to(properties: TProps, duration?: number): this {
+		return this.toNotStrict(properties, duration);
 	}
 
 	duration(d = 1000): this {
