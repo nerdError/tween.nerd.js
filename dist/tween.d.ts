@@ -182,7 +182,7 @@ declare class Sequence {
     static nextId(): number;
 }
 
-declare const VERSION = "18.6.4";
+declare const VERSION = "18.6.6";
 
 declare const nextId: typeof Sequence.nextId;
 declare const getAll: () => Tween<Record<string, any>, ExtractProps<Record<string, any>>>[];

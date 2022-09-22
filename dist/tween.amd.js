@@ -803,7 +803,7 @@ define(['exports'], function (exports) { 'use strict';
         return Tween;
     }());
 
-    var VERSION = '18.6.4';
+    var VERSION = '18.6.6';
 
     /**
      * Tween.js - Licensed under the MIT license
