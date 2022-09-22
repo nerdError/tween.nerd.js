@@ -98,7 +98,7 @@ declare class Group {
     update(time?: number, preserve?: boolean): boolean;
 }
 
-declare class Tween<T extends UnknownProps, TProps = ExtractProps<T>> {
+declare class Tween<T extends UnknownProps, TProps extends UnknownProps = ExtractProps<T>> {
     private _object;
     private _group;
     private _isPaused;
@@ -132,8 +132,8 @@ declare class Tween<T extends UnknownProps, TProps = ExtractProps<T>> {
     getId(): number;
     isPlaying(): boolean;
     isPaused(): boolean;
-    to(properties: UnknownProps, duration?: number): this;
-    toStrict(properties: TProps, duration?: number): this;
+    toNotStrict(properties: UnknownProps, duration?: number): this;
+    to(properties: TProps, duration?: number): this;
     duration(d?: number): this;
     start(time?: number): this;
     private _setupProperties;
@@ -182,7 +182,7 @@ declare class Sequence {
     static nextId(): number;
 }
 
-declare const VERSION = "18.6.8";
+declare const VERSION = "18.6.9";
 
 declare const nextId: typeof Sequence.nextId;
 declare const getAll: () => Tween<Record<string, any>, ExtractProps<Record<string, any>>>[];

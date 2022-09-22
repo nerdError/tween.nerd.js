@@ -438,7 +438,7 @@
         Tween.prototype.isPaused = function () {
             return this._isPaused;
         };
-        Tween.prototype.to = function (properties, duration) {
+        Tween.prototype.toNotStrict = function (properties, duration) {
             // TODO? restore this, then update the 07_dynamic_to example to set fox
             // tween's to on each update. That way the behavior is opt-in (there's
             // currently no opt-out).
@@ -449,8 +449,8 @@
             }
             return this;
         };
-        Tween.prototype.toStrict = function (properties, duration) {
-            return this.to(properties, duration);
+        Tween.prototype.to = function (properties, duration) {
+            return this.toNotStrict(properties, duration);
         };
         Tween.prototype.duration = function (d) {
             if (d === void 0) { d = 1000; }
@@ -807,7 +807,7 @@
         return Tween;
     }());
 
-    var VERSION = '18.6.8';
+    var VERSION = '18.6.9';
 
     /**
      * Tween.js - Licensed under the MIT license
