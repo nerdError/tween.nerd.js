@@ -801,7 +801,7 @@ var Tween = /** @class */ (function () {
     return Tween;
 }());
 
-var VERSION = '18.6.7';
+var VERSION = '18.6.8';
 
 /**
  * Tween.js - Licensed under the MIT license
