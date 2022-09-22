@@ -56,6 +56,11 @@ declare const Easing: {
         Out: (amount: number) => number;
         InOut: (amount: number) => number;
     };
+    generatePow: (power?: number) => {
+        In(amount: number): number;
+        Out(amount: number): number;
+        InOut(amount: number): number;
+    };
 };
 
 /**
@@ -77,7 +82,23 @@ declare const Interpolation: {
     };
 };
 
-declare class Tween<T extends UnknownProps> {
+/**
+ * Controlling groups of tweens
+ *
+ * Using the TWEEN singleton to manage your tweens can cause issues in large apps with many components.
+ * In these cases, you may want to create your own smaller groups of tween
+ */
+declare class Group {
+    private _tweens;
+    private _tweensAddedDuringUpdate;
+    getAll(): Array<Tween<UnknownProps>>;
+    removeAll(): void;
+    add(tween: Tween<UnknownProps>): void;
+    remove(tween: Tween<UnknownProps>): void;
+    update(time?: number, preserve?: boolean): boolean;
+}
+
+declare class Tween<T extends UnknownProps, TProps = ExtractProps<T>> {
     private _object;
     private _group;
     private _isPaused;
@@ -99,6 +120,8 @@ declare class Tween<T extends UnknownProps> {
     private _chainedTweens;
     private _onStartCallback?;
     private _onStartCallbackFired;
+    private _onEveryStartCallback?;
+    private _onEveryStartCallbackFired;
     private _onUpdateCallback?;
     private _onRepeatCallback?;
     private _onCompleteCallback?;
@@ -110,7 +133,8 @@ declare class Tween<T extends UnknownProps> {
     isPlaying(): boolean;
     isPaused(): boolean;
     to(properties: UnknownProps, duration?: number): this;
-    duration(d: number): this;
+    toStrict(properties: TProps, duration?: number): this;
+    duration(d?: number): this;
     start(time?: number): this;
     private _setupProperties;
     stop(): this;
@@ -118,19 +142,20 @@ declare class Tween<T extends UnknownProps> {
     pause(time?: number): this;
     resume(time?: number): this;
     stopChainedTweens(): this;
-    group(group: Group): this;
-    delay(amount: number): this;
-    repeat(times: number): this;
-    repeatDelay(amount: number): this;
-    yoyo(yoyo: boolean): this;
-    easing(easingFunction: EasingFunction): this;
-    interpolation(interpolationFunction: InterpolationFunction): this;
-    chain(...tweens: Array<Tween<UnknownProps>>): this;
-    onStart(callback: (object: T) => void): this;
-    onUpdate(callback: (object: T, elapsed: number) => void): this;
-    onRepeat(callback: (object: T) => void): this;
-    onComplete(callback: (object: T) => void): this;
-    onStop(callback: (object: T) => void): this;
+    group(group?: Group): this;
+    delay(amount?: number): this;
+    repeat(times?: number): this;
+    repeatDelay(amount?: number): this;
+    yoyo(yoyo?: boolean): this;
+    easing(easingFunction?: EasingFunction): this;
+    interpolation(interpolationFunction?: InterpolationFunction): this;
+    chain(...tweens: Array<Tween<any>>): this;
+    onStart(callback?: (object: T) => void): this;
+    onEveryStart(callback?: (object: T) => void): this;
+    onUpdate(callback?: (object: T, elapsed: number) => void): this;
+    onRepeat(callback?: (object: T) => void): this;
+    onComplete(callback?: (object: T) => void): this;
+    onStop(callback?: (object: T) => void): this;
     private _goToEnd;
     /**
      * @returns true if the tween is still playing after the update, false
@@ -143,22 +168,9 @@ declare class Tween<T extends UnknownProps> {
     private _swapEndStartRepeatValues;
 }
 declare type UnknownProps = Record<string, any>;
-
-/**
- * Controlling groups of tweens
- *
- * Using the TWEEN singleton to manage your tweens can cause issues in large apps with many components.
- * In these cases, you may want to create your own smaller groups of tween
- */
-declare class Group {
-    private _tweens;
-    private _tweensAddedDuringUpdate;
-    getAll(): Array<Tween<UnknownProps>>;
-    removeAll(): void;
-    add(tween: Tween<UnknownProps>): void;
-    remove(tween: Tween<UnknownProps>): void;
-    update(time?: number, preserve?: boolean): boolean;
-}
+declare type ExtractProps<T extends UnknownProps> = {
+    [key in keyof Partial<T>]: T[key];
+};
 
 declare let now: () => number;
 
@@ -173,10 +185,10 @@ declare class Sequence {
 declare const VERSION = "18.6.4";
 
 declare const nextId: typeof Sequence.nextId;
-declare const getAll: () => Tween<Record<string, any>>[];
+declare const getAll: () => Tween<Record<string, any>, ExtractProps<Record<string, any>>>[];
 declare const removeAll: () => void;
-declare const add: (tween: Tween<Record<string, any>>) => void;
-declare const remove: (tween: Tween<Record<string, any>>) => void;
+declare const add: (tween: Tween<Record<string, any>, ExtractProps<Record<string, any>>>) => void;
+declare const remove: (tween: Tween<Record<string, any>, ExtractProps<Record<string, any>>>) => void;
 declare const update: (time?: number, preserve?: boolean) => boolean;
 declare const exports: {
     Easing: {
@@ -233,6 +245,11 @@ declare const exports: {
             Out: (amount: number) => number;
             InOut: (amount: number) => number;
         };
+        generatePow: (power?: number) => {
+            In(amount: number): number;
+            Out(amount: number): number;
+            InOut(amount: number): number;
+        };
     };
     Group: typeof Group;
     Interpolation: {
@@ -251,10 +268,10 @@ declare const exports: {
     nextId: typeof Sequence.nextId;
     Tween: typeof Tween;
     VERSION: string;
-    getAll: () => Tween<Record<string, any>>[];
+    getAll: () => Tween<Record<string, any>, ExtractProps<Record<string, any>>>[];
     removeAll: () => void;
-    add: (tween: Tween<Record<string, any>>) => void;
-    remove: (tween: Tween<Record<string, any>>) => void;
+    add: (tween: Tween<Record<string, any>, ExtractProps<Record<string, any>>>) => void;
+    remove: (tween: Tween<Record<string, any>, ExtractProps<Record<string, any>>>) => void;
     update: (time?: number, preserve?: boolean) => boolean;
 };
 

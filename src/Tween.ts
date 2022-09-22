@@ -17,7 +17,7 @@ import type {EasingFunction} from './Easing'
 import type {InterpolationFunction} from './Interpolation'
 import type Group from './Group'
 
-export class Tween<T extends UnknownProps> {
+export class Tween<T extends UnknownProps, TProps = ExtractProps<T>> {
 	private _isPaused = false
 	private _pauseStart = 0
 	private _valuesStart: UnknownProps = {}
@@ -73,6 +73,10 @@ export class Tween<T extends UnknownProps> {
 		}
 
 		return this
+	}
+
+	toStrict(properties: TProps, duration?: number): this {
+		return this.to(properties, duration);
 	}
 
 	duration(d = 1000): this {
@@ -511,5 +515,6 @@ export class Tween<T extends UnknownProps> {
 
 // eslint-disable-next-line
 export type UnknownProps = Record<string, any>
+export type ExtractProps<T extends UnknownProps> = { [key in keyof Partial<T>]: T[key] }
 
 export default Tween
