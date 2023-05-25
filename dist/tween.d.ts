@@ -68,7 +68,7 @@ declare class Group {
  * Thank you all, you're awesome!
  */
 
-declare class Tween<T extends UnknownProps> {
+declare class Tween<T extends UnknownProps, TProps extends UnknownProps = ExtractProps<T>> {
     private _object;
     private _group;
     private _isPaused;
@@ -104,7 +104,8 @@ declare class Tween<T extends UnknownProps> {
     getId(): number;
     isPlaying(): boolean;
     isPaused(): boolean;
-    to(target: UnknownProps, duration?: number): this;
+    toNotStrict(target: UnknownProps, duration?: number): this;
+    to(properties: TProps, duration?: number): this;
     duration(duration?: number): this;
     dynamic(dynamic?: boolean): this;
     start(time?: number, overrideStartingValues?: boolean): this;
@@ -141,6 +142,9 @@ declare class Tween<T extends UnknownProps> {
     private _swapEndStartRepeatValues;
 }
 type UnknownProps = Record<string, any>;
+type ExtractProps<T extends UnknownProps> = {
+    [key in keyof Partial<T>]: T[key];
+};
 
 declare const now: () => number;
 
@@ -155,10 +159,10 @@ declare class Sequence {
 declare const VERSION = "20.0.3";
 
 declare const nextId: typeof Sequence.nextId;
-declare const getAll: () => Tween<UnknownProps>[];
+declare const getAll: () => Tween<UnknownProps, ExtractProps<UnknownProps>>[];
 declare const removeAll: () => void;
-declare const add: (tween: Tween<UnknownProps>) => void;
-declare const remove: (tween: Tween<UnknownProps>) => void;
+declare const add: (tween: Tween<UnknownProps, ExtractProps<UnknownProps>>) => void;
+declare const remove: (tween: Tween<UnknownProps, ExtractProps<UnknownProps>>) => void;
 declare const update: (time?: number, preserve?: boolean) => boolean;
 
 declare const exports: {
@@ -195,10 +199,10 @@ declare const exports: {
     nextId: typeof Sequence.nextId;
     Tween: typeof Tween;
     VERSION: string;
-    getAll: () => Tween<UnknownProps>[];
+    getAll: () => Tween<UnknownProps, ExtractProps<UnknownProps>>[];
     removeAll: () => void;
-    add: (tween: Tween<UnknownProps>) => void;
-    remove: (tween: Tween<UnknownProps>) => void;
+    add: (tween: Tween<UnknownProps, ExtractProps<UnknownProps>>) => void;
+    remove: (tween: Tween<UnknownProps, ExtractProps<UnknownProps>>) => void;
     update: (time?: number, preserve?: boolean) => boolean;
 };
 

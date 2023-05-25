@@ -415,7 +415,7 @@ define(['exports'], (function (exports) { 'use strict';
         Tween.prototype.isPaused = function () {
             return this._isPaused;
         };
-        Tween.prototype.to = function (target, duration) {
+        Tween.prototype.toNotStrict = function (target, duration) {
             if (duration === void 0) { duration = 1000; }
             if (this._isPlaying)
                 throw new Error('Can not call Tween.to() while Tween is already started or paused. Stop the Tween first.');
@@ -423,6 +423,9 @@ define(['exports'], (function (exports) { 'use strict';
             this._propertiesAreSetUp = false;
             this._duration = duration;
             return this;
+        };
+        Tween.prototype.to = function (properties, duration) {
+            return this.toNotStrict(properties, duration);
         };
         Tween.prototype.duration = function (duration) {
             if (duration === void 0) { duration = 1000; }
