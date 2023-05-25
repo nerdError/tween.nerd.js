@@ -1,72 +1,33 @@
-declare type EasingFunction = (amount: number) => number;
+type EasingFunction = (amount: number) => number;
+type EasingFunctionGroup = {
+    In: EasingFunction;
+    Out: EasingFunction;
+    InOut: EasingFunction;
+};
 /**
  * The Ease class provides a collection of easing functions for use with tween.js.
  */
-declare const Easing: {
-    Linear: {
-        None: (amount: number) => number;
-    };
-    Quadratic: {
-        In: (amount: number) => number;
-        Out: (amount: number) => number;
-        InOut: (amount: number) => number;
-    };
-    Cubic: {
-        In: (amount: number) => number;
-        Out: (amount: number) => number;
-        InOut: (amount: number) => number;
-    };
-    Quartic: {
-        In: (amount: number) => number;
-        Out: (amount: number) => number;
-        InOut: (amount: number) => number;
-    };
-    Quintic: {
-        In: (amount: number) => number;
-        Out: (amount: number) => number;
-        InOut: (amount: number) => number;
-    };
-    Sinusoidal: {
-        In: (amount: number) => number;
-        Out: (amount: number) => number;
-        InOut: (amount: number) => number;
-    };
-    Exponential: {
-        In: (amount: number) => number;
-        Out: (amount: number) => number;
-        InOut: (amount: number) => number;
-    };
-    Circular: {
-        In: (amount: number) => number;
-        Out: (amount: number) => number;
-        InOut: (amount: number) => number;
-    };
-    Elastic: {
-        In: (amount: number) => number;
-        Out: (amount: number) => number;
-        InOut: (amount: number) => number;
-    };
-    Back: {
-        In: (amount: number) => number;
-        Out: (amount: number) => number;
-        InOut: (amount: number) => number;
-    };
-    Bounce: {
-        In: (amount: number) => number;
-        Out: (amount: number) => number;
-        InOut: (amount: number) => number;
-    };
-    generatePow: (power?: number) => {
-        In(amount: number): number;
-        Out(amount: number): number;
-        InOut(amount: number): number;
-    };
-};
+declare const Easing: Readonly<{
+    Linear: Readonly<EasingFunctionGroup & {
+        None: EasingFunction;
+    }>;
+    Quadratic: Readonly<EasingFunctionGroup>;
+    Cubic: Readonly<EasingFunctionGroup>;
+    Quartic: Readonly<EasingFunctionGroup>;
+    Quintic: Readonly<EasingFunctionGroup>;
+    Sinusoidal: Readonly<EasingFunctionGroup>;
+    Exponential: Readonly<EasingFunctionGroup>;
+    Circular: Readonly<EasingFunctionGroup>;
+    Elastic: Readonly<EasingFunctionGroup>;
+    Back: Readonly<EasingFunctionGroup>;
+    Bounce: Readonly<EasingFunctionGroup>;
+    generatePow(power?: number): EasingFunctionGroup;
+}>;
 
 /**
  *
  */
-declare type InterpolationFunction = (v: number[], k: number) => number;
+type InterpolationFunction = (v: number[], k: number) => number;
 /**
  *
  */
@@ -98,7 +59,16 @@ declare class Group {
     update(time?: number, preserve?: boolean): boolean;
 }
 
-declare class Tween<T extends UnknownProps, TProps extends UnknownProps = ExtractProps<T>> {
+/**
+ * Tween.js - Licensed under the MIT license
+ * https://github.com/tweenjs/tween.js
+ * ----------------------------------------------
+ *
+ * See https://github.com/tweenjs/tween.js/graphs/contributors for the full list of contributors.
+ * Thank you all, you're awesome!
+ */
+
+declare class Tween<T extends UnknownProps> {
     private _object;
     private _group;
     private _isPaused;
@@ -107,6 +77,7 @@ declare class Tween<T extends UnknownProps, TProps extends UnknownProps = Extrac
     private _valuesEnd;
     private _valuesStartRepeat;
     private _duration;
+    private _isDynamic;
     private _initialRepeat;
     private _repeat;
     private _repeatDelayTime?;
@@ -128,14 +99,16 @@ declare class Tween<T extends UnknownProps, TProps extends UnknownProps = Extrac
     private _onStopCallback?;
     private _id;
     private _isChainStopped;
+    private _propertiesAreSetUp;
     constructor(_object: T, _group?: Group | false);
     getId(): number;
     isPlaying(): boolean;
     isPaused(): boolean;
-    toNotStrict(properties: UnknownProps, duration?: number): this;
-    to(properties: TProps, duration?: number): this;
-    duration(d?: number): this;
-    start(time?: number): this;
+    to(target: UnknownProps, duration?: number): this;
+    duration(duration?: number): this;
+    dynamic(dynamic?: boolean): this;
+    start(time?: number, overrideStartingValues?: boolean): this;
+    startFromCurrentValues(time?: number): this;
     private _setupProperties;
     stop(): this;
     end(): this;
@@ -167,12 +140,9 @@ declare class Tween<T extends UnknownProps, TProps extends UnknownProps = Extrac
     private _handleRelativeValue;
     private _swapEndStartRepeatValues;
 }
-declare type UnknownProps = Record<string, any>;
-declare type ExtractProps<T extends UnknownProps> = {
-    [key in keyof Partial<T>]: T[key];
-};
+type UnknownProps = Record<string, any>;
 
-declare let now: () => number;
+declare const now: () => number;
 
 /**
  * Utils
@@ -182,75 +152,32 @@ declare class Sequence {
     static nextId(): number;
 }
 
-declare const VERSION = "18.6.9";
+declare const VERSION = "20.0.3";
 
 declare const nextId: typeof Sequence.nextId;
-declare const getAll: () => Tween<Record<string, any>, ExtractProps<Record<string, any>>>[];
+declare const getAll: () => Tween<UnknownProps>[];
 declare const removeAll: () => void;
-declare const add: (tween: Tween<Record<string, any>, ExtractProps<Record<string, any>>>) => void;
-declare const remove: (tween: Tween<Record<string, any>, ExtractProps<Record<string, any>>>) => void;
+declare const add: (tween: Tween<UnknownProps>) => void;
+declare const remove: (tween: Tween<UnknownProps>) => void;
 declare const update: (time?: number, preserve?: boolean) => boolean;
+
 declare const exports: {
-    Easing: {
-        Linear: {
-            None: (amount: number) => number;
-        };
-        Quadratic: {
-            In: (amount: number) => number;
-            Out: (amount: number) => number;
-            InOut: (amount: number) => number;
-        };
-        Cubic: {
-            In: (amount: number) => number;
-            Out: (amount: number) => number;
-            InOut: (amount: number) => number;
-        };
-        Quartic: {
-            In: (amount: number) => number;
-            Out: (amount: number) => number;
-            InOut: (amount: number) => number;
-        };
-        Quintic: {
-            In: (amount: number) => number;
-            Out: (amount: number) => number;
-            InOut: (amount: number) => number;
-        };
-        Sinusoidal: {
-            In: (amount: number) => number;
-            Out: (amount: number) => number;
-            InOut: (amount: number) => number;
-        };
-        Exponential: {
-            In: (amount: number) => number;
-            Out: (amount: number) => number;
-            InOut: (amount: number) => number;
-        };
-        Circular: {
-            In: (amount: number) => number;
-            Out: (amount: number) => number;
-            InOut: (amount: number) => number;
-        };
-        Elastic: {
-            In: (amount: number) => number;
-            Out: (amount: number) => number;
-            InOut: (amount: number) => number;
-        };
-        Back: {
-            In: (amount: number) => number;
-            Out: (amount: number) => number;
-            InOut: (amount: number) => number;
-        };
-        Bounce: {
-            In: (amount: number) => number;
-            Out: (amount: number) => number;
-            InOut: (amount: number) => number;
-        };
-        generatePow: (power?: number) => {
-            In(amount: number): number;
-            Out(amount: number): number;
-            InOut(amount: number): number;
-        };
-    };
+    Easing: Readonly<{
+        Linear: Readonly<EasingFunctionGroup & {
+            None: EasingFunction;
+        }>;
+        Quadratic: Readonly<EasingFunctionGroup>;
+        Cubic: Readonly<EasingFunctionGroup>;
+        Quartic: Readonly<EasingFunctionGroup>;
+        Quintic: Readonly<EasingFunctionGroup>;
+        Sinusoidal: Readonly<EasingFunctionGroup>;
+        Exponential: Readonly<EasingFunctionGroup>;
+        Circular: Readonly<EasingFunctionGroup>;
+        Elastic: Readonly<EasingFunctionGroup>;
+        Back: Readonly<EasingFunctionGroup>;
+        Bounce: Readonly<EasingFunctionGroup>;
+        generatePow(power?: number): EasingFunctionGroup;
+    }>;
     Group: typeof Group;
     Interpolation: {
         Linear: (v: number[], k: number) => number;
@@ -268,12 +195,11 @@ declare const exports: {
     nextId: typeof Sequence.nextId;
     Tween: typeof Tween;
     VERSION: string;
-    getAll: () => Tween<Record<string, any>, ExtractProps<Record<string, any>>>[];
+    getAll: () => Tween<UnknownProps>[];
     removeAll: () => void;
-    add: (tween: Tween<Record<string, any>, ExtractProps<Record<string, any>>>) => void;
-    remove: (tween: Tween<Record<string, any>, ExtractProps<Record<string, any>>>) => void;
+    add: (tween: Tween<UnknownProps>) => void;
+    remove: (tween: Tween<UnknownProps>) => void;
     update: (time?: number, preserve?: boolean) => boolean;
 };
 
-export default exports;
-export { Easing, Group, Interpolation, Sequence, Tween, VERSION, add, getAll, nextId, now, remove, removeAll, update };
+export { Easing, Group, Interpolation, Sequence, Tween, VERSION, add, exports as default, getAll, nextId, now, remove, removeAll, update };
