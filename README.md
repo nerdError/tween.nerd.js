@@ -386,7 +386,7 @@ Maintainers: [mikebolt](https://github.com/mikebolt), [sole](https://github.com/
 [![Linechart](https://tweenjs.github.io/tween.js/assets/projects/00_linechart.png)](http://dejavis.org/linechart)
 
 [npm-image]: https://img.shields.io/npm/v/@tweenjs/tween.js.svg
-[npm-url]: https://npmjs.org/package/@tweenjs/tween.js
+[npm-url]: https://www.npmjs.com/package/tween.nerd.js
 [downloads-image]: https://img.shields.io/npm/dm/@tweenjs/tween.js.svg
 [downloads-url]: https://npmjs.org/package/@tweenjs/tween.js
 [ci-image]: https://github.com/tweenjs/tween.js/workflows/build%20and%20tests/badge.svg?branch=master
